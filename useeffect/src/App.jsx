@@ -4,23 +4,12 @@ import CharacterList from "./components/CharacterList"
 import SearchBar from "./components/SearchBar"
 import axios from 'axios'
 
-const filterCharacters = (searchTerm) =>  {
- const char = characters.filter((el) =>{
-   el.name.toLowerCase().includes(searchTerm.toLowerCase())
- } )
- return char
-}
+
 
 
 function App() {
 
-  const handleChange = async(e) => {
-    if (!e.target.value){
-      setSearchTerm('')
-    }
-    const char = await searchTerm(e.target.value)
-    searchTerm(e.target.value,char)
-  }
+
 
 
   const [characters, setCharacters] = useState([]);
@@ -29,13 +18,14 @@ function App() {
   useEffect(() => {
   axios.get('https://rickandmortyapi.com/api/character')
   .then(res => {
-    setCharacters(res.data.results)
+    setCharacters(res.data.results.filter((el)=> el.name.toLowerCase().includes(searchTerm.toLowerCase())))
+
   })
-  },[])
+  },[searchTerm])
 
   return (
     <div>
-    <SearchBar characters={characters}/>
+    <SearchBar setSearchTerm={setSearchTerm}/>
     <CharacterList characters = {characters}/>
     </div>
   );
